@@ -1,8 +1,7 @@
 import numpy as np, matplotlib.pyplot as plt
 
 # --- Set Initial Parameters ---
-N = 1000; I0 = 1
-T = 600
+N = 1000; I0 = 1; T = 600
 beta, gamma = 0.1, 0.015 # Infection and recovery rates
 dt = 0.1
 
@@ -31,7 +30,7 @@ for t in np.arange(0, T, dt):
     I = np.sum(statenew == 1)
     R = N - I - S
     Sarr.append(S); Iarr.append(I); Rarr.append(R)
-    Tarr.append(t)
+    Tarr.append(t + dt)
     state = statenew
 
 # --- Visualization ---
