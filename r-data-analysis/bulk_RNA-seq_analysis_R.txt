@@ -1,0 +1,59 @@
+# --- Set Initial Parameters ---
+working_directory <- c("") # Choose your working directory
+raw_file <- c("subread-transcript-raw_count.txt")
+group_condition <- c(
+    "NAc_CTRL", "NAc_CTRL", "NAc_CTRL", 
+    "NAc_Sus", "NAc_Sus", "NAc_Sus", 
+    "NAc_Res", "NAc_Res", "NAc_Res", 
+    "PFC_CTRL", "PFC_CTRL", "PFC_CTRL", 
+    "PFC_Sus", "PFC_Sus", "PFC_Sus", 
+    "PFC_Res", "PFC_Res", "PFC_Res"
+)
+
+
+# --- Pakage Install ---
+getwd(working_directory)
+chooseCRANmirror()
+install.packages(c("limma", "DESeq2", "pheatmap", "ggplot2", "ggrepel", "gplots", "RColorBrewer", "fgsea", "msigdbr", "clusterProfiler", "org.Mm.eg.db", "dplyr", "biomaRt", "readr"))
+
+BiocManager::install("sys", update = TRUE, ask = FALSE)
+BiocManager::install()
+BiocManager::valid()
+
+library(limma)
+library(DESeq2)
+library(pheatmap)
+library(ggplot2)
+library(ggrepel)
+library(gplots)
+library(RColorBrewer)
+library(fgsea)
+library(msigdbr)
+library(clusterProfiler)
+library(org.Mm.eg.db)
+library(biomaRt)
+library(dplyr)
+
+
+# --- Road Data Files ---
+raw.data = read.table(file=raw_file, header=TRUE, row.names=1, sep="\t", na.strings="NULL")
+head(raw.data)
+
+raw.data <- raw.data[, -(1:5)]
+head(raw.data)
+
+group <- data.frame(
+    row.names = colnames(raw.data),
+    condition = group_condition
+)
+head(group)
+
+
+# --- DEG Analysis (NAc_Sus vs. NAc_CTRL) ---
+# Initializing the DESeq2 Object
+dds <- DESeqDataSetFromMatrix(countData = raw.data, colData = group, design = ~ condition)
+
+# The Low-Count Filter
+smallestGroupSize = 2
+keep <- rowSums(counts(dds) >= 10) >= smallestGroupSize
+dds <- dds[keep,]
