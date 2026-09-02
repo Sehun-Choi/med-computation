@@ -1,1 +1,9 @@
 test.py
+
+# External cloned repo (re-fetchable via setup-manual.md instructions;
+# has its own nested .git, no LICENSE to redistribute, and its renv library
+# fills with large regenerable files once packages are installed).
+# Ignore everything inside it except the renv lockfile, which IS our own
+# reproducibility record.
+paper-reproduction/central-amygdala-aud-atlas/paper-code/*
+!paper-reproduction/central-amygdala-aud-atlas/paper-code/renv.lock
